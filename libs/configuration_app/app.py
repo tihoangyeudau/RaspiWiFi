@@ -33,7 +33,7 @@ def save_credentials():
     wifi_key = request.form['wifi_key']
 
     create_wpa_supplicant(ssid, wifi_key)
-    
+
     # Call set_ap_client_mode() in a thread otherwise the reboot will prevent
     # the response from getting to the browser
     def sleep_and_start_ap():
@@ -85,10 +85,11 @@ def scan_wifi_networks():
     return ap_array
 
 def create_wpa_supplicant(ssid, wifi_key):
-    temp_conf_file = open('wpa_supplicant.conf.tmp', 'w')
+    temp_conf_file = open('/tmp/wpa_supplicant.conf.tmp', 'w')
 
     temp_conf_file.write('ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n')
     temp_conf_file.write('update_config=1\n')
+    temp_conf_file.write('country=VN\n')
     temp_conf_file.write('\n')
     temp_conf_file.write('network={\n')
     temp_conf_file.write('	ssid="' + ssid + '"\n')
@@ -100,9 +101,9 @@ def create_wpa_supplicant(ssid, wifi_key):
 
     temp_conf_file.write('	}')
 
-    temp_conf_file.close
+    temp_conf_file.close()
 
-    os.system('mv wpa_supplicant.conf.tmp /etc/wpa_supplicant/wpa_supplicant.conf')
+    os.system('mv /tmp/wpa_supplicant.conf.tmp /etc/wpa_supplicant/wpa_supplicant.conf')
 
 def set_ap_client_mode():
     os.system('rm -f /etc/raspiwifi/host_mode')
